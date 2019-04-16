@@ -11,28 +11,37 @@ class App extends Component {
     cryptocurrency: []
   }
 }
+//https://stackoverflow.com/questions/45982244/adding-setinterval-to-componentdidmount-in-react
   componentDidMount() {
-  fetch("https://api.coinmarketcap.com/v2/ticker/?limit=20")
-    .then((res) => res.json())
-    .then(
-      (result) => {
-        let currency = Object.values(result.data)
-        this.setState({
-          isLoaded: true,
-          cryptocurrency: currency
-        })
-      },
-      (error) => {
-        this.setState({
-          isLoaded: true,
-          error
-        })
-      }
-    )
+    this.getInfo()
+    this.interval = setInterval(this.getInfo, 10000);
+}
+componentWillUnmount() {
+    clearInterval(this.interval);
+}
+
+getInfo = () =>{
+
+ fetch("https://api.coinmarketcap.com/v2/ticker/?limit=20")
+  .then((res) => res.json())
+  .then(
+    (result) => {
+      let currency = Object.values(result.data)
+      this.setState({
+        isLoaded: true,
+        cryptocurrency: currency
+      })
+    },
+    (error) => {
+      this.setState({
+        isLoaded: true,
+        error
+      })
+    }
+  )
 }
   render() {
     const { error, isLoaded, cryptocurrency } = this.state
-    console.log(cryptocurrency);
 
     return (
       <div className="App">
