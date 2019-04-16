@@ -1,28 +1,49 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import Table from "./Components/Table"
 import './App.css';
 
 class App extends Component {
+  constructor(props) {
+  super(props)
+  this.state = {
+    error: null,
+    isLoaded: false,
+    cryptocurrency: []
+  }
+}
+  componentDidMount() {
+  fetch("https://api.coinmarketcap.com/v2/ticker/?limit=20")
+    .then((res) => res.json())
+    .then(
+      (result) => {
+        let currency = Object.values(result.data)
+        this.setState({
+          isLoaded: true,
+          cryptocurrency: currency
+        })
+      },
+      (error) => {
+        this.setState({
+          isLoaded: true,
+          error
+        })
+      }
+    )
+}
   render() {
+    const { error, isLoaded, cryptocurrency } = this.state
+    console.log(cryptocurrency);
+
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+        <Table info={this.state.cryptocurrency}/>
       </div>
     );
   }
 }
 
+/*
+
+
+*/
 export default App;
